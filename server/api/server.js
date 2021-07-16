@@ -8,7 +8,7 @@ server.use(express.json()); // method recognising any incoming Request Object as
 
 const routes = require("./controllers/composers");
 
-server.use("/composers", routes); // detailed non-root routes from that file
+server.use("/", routes); // detailed non-root routes from that file
 
 // Root route:
 server.get("/", (req, res) => res.send("Hello from Composer App!"));

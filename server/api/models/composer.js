@@ -45,16 +45,39 @@ class Composer {
           `SELECT * FROM composers WHERE country = $1;`,
           [country]
         );
-        const composers = composerData.map((c) => new Composer(c));
+        const composers = composerData.rows.map((c) => new Composer(c));
         resolve(composers);
       } catch (err) {
         reject("Composers from this country not found!");
       }
     });
   }
-  // static create(name, years, country) - later
+
+  static create(name, fullName, country, birthYear, deathYear) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let composerData = await db.query(
+          `INSERT INTO composers (name, full_name, country, birth_year, death_year) VALUES ($1, $2, $3, $4, $5) RETURNING full_name;`,
+          [name, fullName, country, birthYear, deathYear]
+        );
+        let newComposer = new Composer(composerData.rows[0]);
+        resolve(newComposer);
+      } catch (err) {
+        reject("Error creating composer!");
+      }
+    });
+  }
   // update() - later
-  // destroy() - later
+  destroy() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await db.query(`DELETE FROM composers WHERE name = $1;`, [this.name]);
+        resolve("Composer was deleted");
+      } catch (err) {
+        reject("Composer could not be deleted");
+      }
+    });
+  }
 }
 
 module.exports = Composer;

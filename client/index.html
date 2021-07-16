@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Composer App</title>
+    <script defer src="script.js"></script>
+    <style>
+      body {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        color: brown;
+        padding-top: 3vh;
+        text-align: center;
+        display: grid;
+        align-content: center;
+        align-items: center;
+      }
+      main {
+        display: grid;
+        grid-template-areas: "section article div div";
+        grid-template-columns: 25% 25% 25% 25%;
+        grid-gap: 1.3rem;
+        height: 80vh;
+        width: 95%;
+      }
+
+      section,
+      article,
+      div {
+        border: 3px solid brown;
+      }
+
+      section,
+      #div-country {
+        overflow-y: scroll;
+      }
+
+      label,
+      input {
+        display: block;
+        margin: auto;
+      }
+
+      button,
+      input {
+        margin-bottom: 2rem;
+      }
+
+      /* This attribute helps recognise /n character set with JS */
+      p {
+        white-space: pre;
+      }
+
+      #msg-button,
+      #all-composers {
+        background-color: brown;
+        padding: 0.5rem 1rem;
+        color: white;
+        border-radius: 5px;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button id="msg-button">GET A MESSAGE :)</button>
+    </header>
+    <main>
+      <section>
+        <button id="all-composers">GET ALL COMPOSERS</button>
+      </section>
+      <article>
+        <h3>Add a new composer:</h3>
+        <form id="new-composer-form">
+          <label for="name">Composer Name</label>
+          <input type="text" id="name" required />
+
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" required />
+
+          <label for="country">Country</label>
+          <input type="text" id="country" required />
+
+          <label for="birthYear">Birth Year</label>
+          <input type="number" id="birthYear" required />
+
+          <label for="deathYear">Death Year</label>
+          <input type="number" id="deathYear" />
+
+          <input type="submit" value="Add Composer" />
+        </form>
+      </article>
+      <div>
+        <h3>Find a composer by name:</h3>
+        <form id="get-by-name">
+          <label for="name">Name</label>
+          <input type="text" id="name" />
+          <input type="submit" value="Submit Name (e.g.'Brahms')" />
+        </form>
+      </div>
+      <div id="div-country">
+        <h3>Find a composer by country:</h3>
+        <form id="get-by-country">
+          <label for="country">Country</label>
+          <input type="text" id="country" />
+          <input type="submit" value="Submit Country" />
+        </form>
+      </div>
+    </main>
+  </body>
+</html>
