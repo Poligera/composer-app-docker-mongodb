@@ -6,14 +6,13 @@ const getAllComposersBtn = document.querySelector("#all-composers");
 const newComposerForm = document.querySelector("#new-composer-form");
 const getByNameForm = document.querySelector("#get-by-name");
 const getByCountryForm = document.querySelector("#get-by-country");
-const updateDiv = document.querySelector("#update-div");
-const updateForm = document.querySelector("#update-composer-form");
+const nameSearchResults = document.querySelectorAll(".search-results")[0];
+const countrySearchResults = document.querySelectorAll(".search-results")[1];
 
 // event listeners
 msgBtn.onclick = () => {
   getMessage();
   msgBtn.style.backgroundColor = "blue";
-  msgBtn.style.textTransform = "uppercase";
 };
 getAllComposersBtn.onclick = () => {
   getAllComposers();
@@ -22,7 +21,6 @@ getAllComposersBtn.onclick = () => {
 newComposerForm.addEventListener("submit", addNewComposer);
 getByNameForm.addEventListener("submit", getComposerByName);
 getByCountryForm.addEventListener("submit", getComposerByCountry);
-// COMPOSERS' FLOW
 
 // Message flow
 
@@ -36,6 +34,7 @@ function getMessage() {
 // COMPOSERS' FLOW
 // all composers route:
 function getAllComposers() {
+  composerList.innerHTML = "";
   fetch("http://localhost:3000/all")
     .then((res) => res.json())
     .then((data) => {
@@ -51,16 +50,20 @@ function getAllComposers() {
         btnDiv.append(deleteBtn);
         par.append(btnDiv);
         composerList.append(par);
-        getAllComposersBtn.disabled = true;
-        deleteBtn.onclick = () => deleteComposer(composer.name, par);
+        // getAllComposersBtn.disabled = true;
+        deleteBtn.onclick = () => deleteComposer(composer.name);
         updateBtn.onclick = () => {
-          updateDiv.style.display = "block";
-          updateForm.fullNameUpdate.value = composer.fullName;
-          updateForm.countryUpdate.value = composer.country;
-          updateForm.birthYearUpdate.value = composer.birthYear;
-          updateForm.deathYearUpdate.value = composer.deathYear;
+          const updateForm = createUpdateComposerForm(composer);
+          par.append(updateForm);
+          updateBtn.disabled = true;
+          // updateDiv.style.display = "block";
+          // updateForm.fullNameUpdate.value = composer.fullName;
+          // updateForm.countryUpdate.value = composer.country;
+          // updateForm.birthYearUpdate.value = composer.birthYear;
+          // updateForm.deathYearUpdate.value = composer.deathYear;
           updateForm.addEventListener("submit", (e) => {
             e.preventDefault();
+
             const updatedData = {
               name: composer.name,
               fullName: e.target.fullNameUpdate.value,
@@ -68,7 +71,8 @@ function getAllComposers() {
               birthYear: parseInt(e.target.birthYearUpdate.value),
               deathYear: parseInt(e.target.deathYearUpdate.value),
             };
-            updateComposer(updatedData, updateDiv);
+            updateComposer(updatedData, updateForm);
+            // const notification = createNotification(`${composer.name} is updated!`);
           });
         };
       });
@@ -88,8 +92,17 @@ function updateComposer(data, el) {
     .then((r) => r.json())
     .then((data) => {
       const { composer } = data;
-      el.textContent = `${composer.name} record has been updated`;
+      alert(`${composer.name} is updated!`);
+      // const notification = document.createElement("p");
+      // notification.textContent = `${composer.name} is updated`;
+      // el.append(notification);
+      getAllComposers();
     })
+    //   setTimeout(() => {
+    //     notification.textContent = "";
+    //     el.style.display = "none";
+    //   }, 3000);
+    // })
     .catch(console.warn);
 }
 
@@ -100,9 +113,9 @@ function getComposerByName(e) {
   fetch(`http://localhost:3000/${name}`)
     .then((res) => res.json())
     .then((data) => {
-      const par = document.createElement("p");
-      par.textContent = `${data.fullName}\n${data.country}\nborn: ${data.birthYear}\ndied: ${data.deathYear}`;
-      e.target.closest("div").append(par);
+      !(data.name === undefined)
+        ? (nameSearchResults.textContent = `${data.fullName}\n${data.country}\nborn: ${data.birthYear}\ndied: ${data.deathYear}`)
+        : alert(`${name} not found! Why not add a new composer?`);
     })
     .then(e.target.reset())
     .catch(console.warn);
@@ -116,11 +129,11 @@ function getComposerByCountry(e) {
   fetch(`http://localhost:3000/country/${countryName}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      countrySearchResults.textContent = "";
       data.composers.forEach((composer) => {
         const par = document.createElement("p");
         par.textContent = `***\n${composer.fullName}\n${composer.country}\nborn: ${composer.birthYear}\ndied: ${composer.deathYear}`;
-        divCountry.append(par);
+        countrySearchResults.append(par);
       });
     })
     .then(e.target.reset())
@@ -147,21 +160,83 @@ function addNewComposer(e) {
   fetch("http://localhost:3000/", options)
     .then((res) => res.json())
     .then((data) => {
-      const par = document.createElement("p");
-      par.textContent = `Composer added:\n${data.fullName}`;
-      article.append(par);
+      // const par = document.createElement("p");
+      // par.textContent = `Composer added:\n${data.fullName}`;
+      // article.append(par);
+      alert(`Composer added: ${data.fullName}`);
       composerList.textContent = "";
       getAllComposersBtn.disabled = false;
     })
     .catch(console.warn);
   e.target.reset();
+  getAllComposers();
 }
 
-function deleteComposer(name, el) {
+function deleteComposer(name) {
   const options = {
     method: "DELETE",
   };
   fetch(`http://localhost:3000/${name}`, options)
-    .then((el.textContent = `${name} was deleted`))
+    .then(alert(`${name} was deleted`))
     .catch(console.warn);
 }
+
+function createUpdateComposerForm(data) {
+  const updateForm = document.createElement("form");
+
+  const fullNameUpdateLabel = document.createElement("label");
+  const fullNameUpdateInput = document.createElement("input");
+  fullNameUpdateLabel.setAttribute("for", "fullNameUpdate");
+  fullNameUpdateLabel.textContent = "Full Name";
+  fullNameUpdateInput.id = "fullNameUpdate";
+  fullNameUpdateInput.type = "text";
+
+  const countryUpdateLabel = document.createElement("label");
+  const countryUpdateInput = document.createElement("input");
+  countryUpdateLabel.setAttribute("for", "countryUpdate");
+  countryUpdateLabel.textContent = "Country";
+  countryUpdateInput.id = "countryUpdate";
+  countryUpdateInput.type = "text";
+
+  const birthYearUpdateLabel = document.createElement("label");
+  const birthYearUpdateInput = document.createElement("input");
+  birthYearUpdateLabel.setAttribute("for", "birthYearUpdate");
+  birthYearUpdateLabel.textContent = "Birth Year";
+  birthYearUpdateInput.id = "birthYearUpdate";
+  birthYearUpdateInput.type = "number";
+
+  const deathYearUpdateLabel = document.createElement("label");
+  const deathYearUpdateInput = document.createElement("input");
+  deathYearUpdateLabel.setAttribute("for", "deathYearUpdate");
+  deathYearUpdateLabel.textContent = "Death Year";
+  deathYearUpdateInput.id = "deathYearUpdate";
+  deathYearUpdateInput.type = "number";
+
+  const submitUpdateBtn = document.createElement("input");
+  submitUpdateBtn.type = "submit";
+
+  updateForm.append(fullNameUpdateLabel);
+  updateForm.append(fullNameUpdateInput);
+  updateForm.append(countryUpdateLabel);
+  updateForm.append(countryUpdateInput);
+  updateForm.append(birthYearUpdateLabel);
+  updateForm.append(birthYearUpdateInput);
+  updateForm.append(deathYearUpdateLabel);
+  updateForm.append(deathYearUpdateInput);
+  updateForm.append(submitUpdateBtn);
+
+  fullNameUpdateInput.value = data.fullName;
+  countryUpdateInput.value = data.country;
+  birthYearUpdateInput.value = data.birthYear;
+  deathYearUpdateInput.value = data.deathYear;
+
+  return updateForm;
+}
+
+// function createNotification(message) {
+//   const notification = document.createElement("p");
+//   notification.textContent = message;
+//   notification.className = "notification";
+//   notification.closest(parent).append(notification);
+//   return notification;
+// }

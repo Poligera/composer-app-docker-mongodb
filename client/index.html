@@ -18,6 +18,7 @@
         align-content: center;
         align-items: center;
       }
+
       main {
         display: grid;
         grid-template-areas: "section article div div";
@@ -25,10 +26,6 @@
         grid-gap: 1.3rem;
         height: 80vh;
         width: 95%;
-      }
-
-      #update-div {
-        display: none;
       }
 
       #composer-list p {
@@ -40,13 +37,25 @@
         grid-template-rows: 1;
       }
 
+      #composer-list p form {
+        position: absolute;
+        left: 7vw;
+        top: 20vh;
+        background-color: rgba(150, 142, 142, 0.8);
+        padding: 2rem;
+        color: antiquewhite;
+        font-weight: bold;
+        text-align: center;
+      }
+
       #composer-list p div {
         display: flex;
         flex-direction: row;
         justify-items: flex-end;
       }
 
-      #composer-list p button {
+      button,
+      input {
         margin-top: auto;
         align-items: center;
         margin-right: 1rem;
@@ -54,7 +63,8 @@
         padding: 0.3rem 0.6rem;
       }
 
-      section p button:nth-child(odd) {
+      section p button:nth-child(odd),
+      .button {
         background-color: rgb(252, 205, 164);
       }
 
@@ -78,6 +88,7 @@
       }
 
       /* This attribute helps recognise /n character set with JS */
+      .search-results,
       p {
         white-space: pre;
       }
@@ -99,61 +110,95 @@
     <main>
       <section>
         <button id="all-composers">GET ALL COMPOSERS</button>
-        <div id="update-div">
-          <form id="update-composer-form">
-            <label for="fullNameUpdate">Full Name</label>
-            <input type="text" id="fullNameUpdate" required />
-
-            <label for="countryUpdate">Country</label>
-            <input type="text" id="countryUpdate" required />
-
-            <label for="birthYearUpdate">Birth Year</label>
-            <input type="number" id="birthYearUpdate" required />
-
-            <label for="deathYearUpdate">Death Year (or "0")</label>
-            <input type="number" id="deathYearUpdate" required />
-
-            <input type="submit" value="SUBMIT" />
-          </form>
-        </div>
         <div id="composer-list"></div>
       </section>
       <article>
         <h3>Add a new composer:</h3>
         <form id="new-composer-form">
           <label for="name">Composer Name</label>
-          <input type="text" id="name" required />
+          <input
+            type="text"
+            id="name"
+            placeholder="e.g. Schubert"
+            onclick="this.placeholder=''"
+            onblur="this.placeholder='e.g. Schubert'"
+            required
+          />
 
           <label for="fullName">Full Name</label>
-          <input type="text" id="fullName" required />
+          <input
+            type="text"
+            id="fullName"
+            placeholder="e.g. Franz Schubert"
+            onclick="this.placeholder=''"
+            onblur="this.placeholder='e.g. Franz Schubert'"
+            required
+          />
 
           <label for="country">Country</label>
-          <input type="text" id="country" required />
+          <input
+            type="text"
+            id="country"
+            placeholder="e.g. Austria"
+            onclick="this.placeholder=''"
+            onblur="this.placeholder='e.g. Austria'"
+            required
+          />
 
           <label for="birthYear">Birth Year</label>
-          <input type="number" id="birthYear" required />
+          <input
+            type="number"
+            id="birthYear"
+            placeholder="e.g. 1797"
+            onclick="this.placeholder=''"
+            onblur="this.placeholder='e.g. 1797'"
+            required
+          />
 
-          <label for="deathYear">Death Year (or "0")</label>
-          <input type="number" id="deathYear" required />
+          <label for="deathYear">Death Year</label>
+          <input
+            type="number"
+            id="deathYear"
+            placeholder="e.g. 1828 or '0'"
+            onclick="this.placeholder=''"
+            onblur='this.placeholder="e.g. 1828 or \"0"'
+            required
+          />
 
-          <input type="submit" value="SUBMIT" />
+          <input type="submit" class="button" value="SUBMIT" />
         </form>
       </article>
       <div id="div-name">
         <h3>Find a composer by name:</h3>
         <form id="get-by-name">
           <label for="name">Name</label>
-          <input type="text" id="name" required />
-          <input type="submit" value="SUBMIT (e.g.'Brahms')" />
+          <input
+            type="text"
+            id="name"
+            placeholder="e.g. Schubert"
+            onclick="this.placeholder=''"
+            onblur="this.placeholder='e.g. Schubert'"
+            required
+          />
+          <input type="submit" class="button" value="SUBMIT" />
         </form>
+        <div class="search-results"></div>
       </div>
       <div id="div-country">
         <h3>Find a composer by country:</h3>
         <form id="get-by-country">
           <label for="country">Country</label>
-          <input type="text" id="country" required />
-          <input type="submit" value="SUBMIT (e.g. 'Austria'" />
+          <input
+            type="text"
+            id="country"
+            placeholder="e.g. Austria"
+            onclick="this.placeholder=''"
+            onblur="this.placeholder='e.g. Austria'"
+            required
+          />
+          <input type="submit" class="button" value="SUBMIT" />
         </form>
+        <div class="search-results"></div>
       </div>
     </main>
   </body>
