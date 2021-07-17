@@ -23,7 +23,6 @@ getByNameForm.addEventListener("submit", getComposerByName);
 getByCountryForm.addEventListener("submit", getComposerByCountry);
 
 // Message flow
-
 function getMessage() {
   fetch("http://localhost:3000")
     .then((res) => res.text())
@@ -50,17 +49,11 @@ function getAllComposers() {
         btnDiv.append(deleteBtn);
         par.append(btnDiv);
         composerList.append(par);
-        // getAllComposersBtn.disabled = true;
         deleteBtn.onclick = () => deleteComposer(composer.name);
         updateBtn.onclick = () => {
           const updateForm = createUpdateComposerForm(composer);
           par.append(updateForm);
           updateBtn.disabled = true;
-          // updateDiv.style.display = "block";
-          // updateForm.fullNameUpdate.value = composer.fullName;
-          // updateForm.countryUpdate.value = composer.country;
-          // updateForm.birthYearUpdate.value = composer.birthYear;
-          // updateForm.deathYearUpdate.value = composer.deathYear;
           updateForm.addEventListener("submit", (e) => {
             e.preventDefault();
 
@@ -72,7 +65,6 @@ function getAllComposers() {
               deathYear: parseInt(e.target.deathYearUpdate.value),
             };
             updateComposer(updatedData, updateForm);
-            // const notification = createNotification(`${composer.name} is updated!`);
           });
         };
       });
@@ -93,16 +85,8 @@ function updateComposer(data, el) {
     .then((data) => {
       const { composer } = data;
       alert(`${composer.name} is updated!`);
-      // const notification = document.createElement("p");
-      // notification.textContent = `${composer.name} is updated`;
-      // el.append(notification);
       getAllComposers();
     })
-    //   setTimeout(() => {
-    //     notification.textContent = "";
-    //     el.style.display = "none";
-    //   }, 3000);
-    // })
     .catch(console.warn);
 }
 
@@ -120,11 +104,10 @@ function getComposerByName(e) {
     .then(e.target.reset())
     .catch(console.warn);
 }
+
 // composer by country route:
 function getComposerByCountry(e) {
   e.preventDefault();
-  const divCountry = e.target.closest("div");
-
   const countryName = e.target.country.value;
   fetch(`http://localhost:3000/country/${countryName}`)
     .then((res) => res.json())
@@ -160,12 +143,8 @@ function addNewComposer(e) {
   fetch("http://localhost:3000/", options)
     .then((res) => res.json())
     .then((data) => {
-      // const par = document.createElement("p");
-      // par.textContent = `Composer added:\n${data.fullName}`;
-      // article.append(par);
       alert(`Composer added: ${data.fullName}`);
       composerList.textContent = "";
-      getAllComposersBtn.disabled = false;
     })
     .catch(console.warn);
   e.target.reset();
@@ -183,7 +162,6 @@ function deleteComposer(name) {
 
 function createUpdateComposerForm(data) {
   const updateForm = document.createElement("form");
-
   const fullNameUpdateLabel = document.createElement("label");
   const fullNameUpdateInput = document.createElement("input");
   fullNameUpdateLabel.setAttribute("for", "fullNameUpdate");
@@ -232,11 +210,3 @@ function createUpdateComposerForm(data) {
 
   return updateForm;
 }
-
-// function createNotification(message) {
-//   const notification = document.createElement("p");
-//   notification.textContent = message;
-//   notification.className = "notification";
-//   notification.closest(parent).append(notification);
-//   return notification;
-// }
