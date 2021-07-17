@@ -85,9 +85,10 @@ function updateComposer(data, el) {
   };
 
   fetch(`http://localhost:3000/${data.name}`, options)
+    .then((r) => r.json())
     .then((data) => {
       const { composer } = data;
-      el.textContent = `${data.name} has been updated`;
+      el.textContent = `${composer.name} record has been updated`;
     })
     .catch(console.warn);
 }
