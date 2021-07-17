@@ -146,6 +146,7 @@ function addNewComposer(e) {
     .then(getAllComposers())
     .catch(console.warn);
   e.target.reset();
+  // getAllComposers();
 }
 
 function deleteComposer(name) {
