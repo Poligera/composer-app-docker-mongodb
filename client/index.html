@@ -21,15 +21,47 @@
       main {
         display: grid;
         grid-template-areas: "section article div div";
-        grid-template-columns: 25% 25% 25% 25%;
+        grid-template-columns: 34% 22% 22% 22%;
         grid-gap: 1.3rem;
         height: 80vh;
         width: 95%;
       }
 
+      #update-div {
+        display: none;
+      }
+
+      #composer-list p {
+        text-align: left;
+        margin-left: 2rem;
+        display: grid;
+        grid-template-areas: "* div";
+        grid-template-columns: 60% 40%;
+        grid-template-rows: 1;
+      }
+
+      #composer-list p div {
+        display: flex;
+        flex-direction: row;
+        justify-items: flex-end;
+      }
+
+      #composer-list p button {
+        margin-top: auto;
+        align-items: center;
+        margin-right: 1rem;
+        border-radius: 5px;
+        padding: 0.3rem 0.6rem;
+      }
+
+      section p button:nth-child(odd) {
+        background-color: rgb(252, 205, 164);
+      }
+
       section,
       article,
-      div {
+      #div-name,
+      #div-country {
         border: 3px solid brown;
         overflow-y: scroll;
       }
@@ -67,6 +99,24 @@
     <main>
       <section>
         <button id="all-composers">GET ALL COMPOSERS</button>
+        <div id="update-div">
+          <form id="update-composer-form">
+            <label for="fullNameUpdate">Full Name</label>
+            <input type="text" id="fullNameUpdate" required />
+
+            <label for="countryUpdate">Country</label>
+            <input type="text" id="countryUpdate" required />
+
+            <label for="birthYearUpdate">Birth Year</label>
+            <input type="number" id="birthYearUpdate" required />
+
+            <label for="deathYearUpdate">Death Year (or "0")</label>
+            <input type="number" id="deathYearUpdate" required />
+
+            <input type="submit" value="SUBMIT" />
+          </form>
+        </div>
+        <div id="composer-list"></div>
       </section>
       <article>
         <h3>Add a new composer:</h3>
@@ -83,26 +133,26 @@
           <label for="birthYear">Birth Year</label>
           <input type="number" id="birthYear" required />
 
-          <label for="deathYear">Death Year</label>
-          <input type="number" id="deathYear" />
+          <label for="deathYear">Death Year (or "0")</label>
+          <input type="number" id="deathYear" required />
 
-          <input type="submit" value="Add Composer" />
+          <input type="submit" value="SUBMIT" />
         </form>
       </article>
-      <div>
+      <div id="div-name">
         <h3>Find a composer by name:</h3>
         <form id="get-by-name">
           <label for="name">Name</label>
-          <input type="text" id="name" />
-          <input type="submit" value="Submit Name (e.g.'Brahms')" />
+          <input type="text" id="name" required />
+          <input type="submit" value="SUBMIT (e.g.'Brahms')" />
         </form>
       </div>
       <div id="div-country">
         <h3>Find a composer by country:</h3>
         <form id="get-by-country">
           <label for="country">Country</label>
-          <input type="text" id="country" />
-          <input type="submit" value="Submit Country" />
+          <input type="text" id="country" required />
+          <input type="submit" value="SUBMIT (e.g. 'Austria'" />
         </form>
       </div>
     </main>
