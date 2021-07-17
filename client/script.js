@@ -33,7 +33,7 @@ function getMessage() {
 // COMPOSERS' FLOW
 // all composers route:
 function getAllComposers() {
-  composerList.innerHTML = "";
+  composerList.textContent = "";
   fetch("http://localhost:3000/all")
     .then((res) => res.json())
     .then((data) => {
@@ -142,13 +142,10 @@ function addNewComposer(e) {
 
   fetch("http://localhost:3000/", options)
     .then((res) => res.json())
-    .then((data) => {
-      alert(`Composer added: ${data.fullName}`);
-      composerList.textContent = "";
-    })
+    .then((data) => alert(`Composer added: ${data.fullName}`))
+    .then(getAllComposers())
     .catch(console.warn);
   e.target.reset();
-  getAllComposers();
 }
 
 function deleteComposer(name) {
@@ -157,6 +154,7 @@ function deleteComposer(name) {
   };
   fetch(`http://localhost:3000/${name}`, options)
     .then(alert(`${name} was deleted`))
+    .then(getAllComposers())
     .catch(console.warn);
 }
 
