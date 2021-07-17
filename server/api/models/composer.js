@@ -57,7 +57,7 @@ class Composer {
     return new Promise(async (resolve, reject) => {
       try {
         let composerData = await db.query(
-          `INSERT INTO composers (name, full_name, country, birth_year, death_year) VALUES ($1, $2, $3, $4, $5) RETURNING full_name;`,
+          `INSERT INTO composers (name, full_name, country, birth_year, death_year) VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
           [name, fullName, country, birthYear, deathYear]
         );
         let newComposer = new Composer(composerData.rows[0]);
@@ -67,7 +67,21 @@ class Composer {
       }
     });
   }
-  // update() - later
+
+  update(fullName, country, birthYear, deathYear) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let updatedComposerData = await db.query(
+          `UPDATE composers SET full_name = $1, country = $2, birth_year = $3, death_year = $4 WHERE name = $5 RETURNING *;`,
+          [fullName, country, birthYear, deathYear, this.name]
+        );
+        resolve(updatedComposerData.rows[0]);
+      } catch (err) {
+        reject("Error updating composer");
+      }
+    });
+  }
+
   destroy() {
     return new Promise(async (resolve, reject) => {
       try {

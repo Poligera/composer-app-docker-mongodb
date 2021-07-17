@@ -6,5 +6,5 @@ CREATE TABLE composers (
     full_name varchar(255) NOT NULL,
     country varchar(255) NOT NULL,
     birth_year int NOT NULL,
-    death_year int
+    death_year int NOT NULL
 );

@@ -33,7 +33,7 @@ router.get("/country/:countryName", async (req, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const composer = await Composer.create(
       req.body.name,
@@ -48,7 +48,22 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.delete("/delete/:name", async (req, res) => {
+router.patch("/:name", async (req, res) => {
+  try {
+    const composer = await Composer.findByName(req.params.name);
+    const updatedComposer = await composer.update(
+      req.body.fullName,
+      req.body.country,
+      req.body.birthYear,
+      req.body.deathYear
+    );
+    res.json({ composer: updatedComposer });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+});
+
+router.delete("/:name", async (req, res) => {
   try {
     const composer = await Composer.findByName(req.params.name);
     await composer.destroy();
