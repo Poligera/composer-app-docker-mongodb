@@ -63,9 +63,13 @@ class Composer {
     return new Promise(async (resolve, reject) => {
       try {
         const db = await init();
-        let composerData = await db
-          .collection("composers")
-          .insertOne({ name, fullName, country, birthYear, deathYear });
+        let composerData = await db.collection("composers").insertOne({
+          name: name,
+          fullName: fullName,
+          country: country,
+          birthYear: birthYear,
+          deathYear: deathYear,
+        });
         let newComposer = new Composer(composerData.ops[0]);
         resolve(newComposer);
       } catch (err) {
@@ -93,8 +97,8 @@ class Composer {
             },
             { returnNewDocument: true }
           );
-        // let updatedComposer = new Composer(updatedComposerData.value)
-        resolve(updatedComposerData.value);
+        let updatedComposer = new Composer(updatedComposerData.value);
+        resolve(updatedComposer);
       } catch (err) {
         reject("Error updating composer");
       }

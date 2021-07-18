@@ -65,7 +65,6 @@ function getAllComposers() {
               deathYear: parseInt(e.target.deathYearUpdate.value),
             };
             updateComposer(updatedData);
-            console.log(updatedData);
           });
         };
       });
@@ -86,6 +85,7 @@ function updateComposer(data) {
     .then((response) => {
       const { composer } = response;
       alert(`${composer.name} is updated!`);
+      console.log(response);
       getAllComposers();
     })
     .catch(console.warn);
@@ -148,7 +148,7 @@ function addNewComposer(e) {
   fetch("http://localhost:3000/", options)
     .then((res) => res.json())
     .then((data) => {
-      alert(`Composer added: ${data.fullName}`);
+      alert(`Composer added: ${composerData.name}`);
       console.log(data);
     })
     .then(getAllComposers())
