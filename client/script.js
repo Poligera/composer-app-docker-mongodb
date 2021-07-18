@@ -37,7 +37,9 @@ function getAllComposers() {
   fetch("http://localhost:3000/all")
     .then((res) => res.json())
     .then((data) => {
+      console.log(data);
       data.composers.forEach((composer) => {
+        console.log(composer);
         const par = document.createElement("p");
         const btnDiv = document.createElement("div");
         const deleteBtn = document.createElement("button");
@@ -109,15 +111,21 @@ function getComposerByName(e) {
 function getComposerByCountry(e) {
   e.preventDefault();
   const countryName = e.target.country.value;
+  console.log(countryName);
   fetch(`http://localhost:3000/country/${countryName}`)
     .then((res) => res.json())
     .then((data) => {
-      countrySearchResults.textContent = "";
-      data.composers.forEach((composer) => {
-        const par = document.createElement("p");
-        par.textContent = `***\n${composer.fullName}\n${composer.country}\nborn: ${composer.birthYear}\ndied: ${composer.deathYear}`;
-        countrySearchResults.append(par);
-      });
+      if (!(data.name === undefined)) {
+        countrySearchResults.textContent = "";
+        data.composers.forEach((composer) => {
+          const par = document.createElement("p");
+          par.textContent = `***\n${composer.fullName}\n${composer.country}\nborn: ${composer.birthYear}\ndied: ${composer.deathYear}`;
+          countrySearchResults.append(par);
+        });
+      } else {
+        alert("No results from this country!");
+        console.log(data.name);
+      }
     })
     .then(e.target.reset())
     .catch(console.warn);

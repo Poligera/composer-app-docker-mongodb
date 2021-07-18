@@ -6,11 +6,8 @@ services:
     ports:
       - 3000:3000
     environment:
-      - PGUSER=polina
-      - PGHOST=db
-      - PGPASSWORD=composerpass
-      - PGDATABASE=composers
-      - PGPORT=5432
+      - DB_NAME=composers
+      - DB_CONNECTION=mongodb://polina:composerpass@db:27017
     depends_on:
       - db
     volumes:
@@ -20,14 +17,13 @@ services:
     command: bash -c "npm install && npm start"
 
   db:
-    image: postgres:latest
+    image: mongo:latest
     volumes:
-      - "dbdata:/var/lib/postgresql/data"
-      - "./db:/docker-entrypoint-initdb.d/:ro"
+      - "dbdata:/var/lib/mongodb/data"
+      - "./db/seeds.js:/docker-entrypoint-initdb.d/seeds.js:ro"
     environment:
-      - POSTGRES_DB=composers
-      - POSTGRES_USER=polina
-      - POSTGRES_PASSWORD=composerpass
-
+      - MONGO_INITDB_ROOT_USERNAME=polina
+      - MONGO_INITDB_DATABASE=composers
+      - MONGO_INITDB_ROOT_PASSWORD=composerpass
 volumes:
   dbdata:

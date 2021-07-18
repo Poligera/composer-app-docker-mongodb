@@ -73,5 +73,4 @@ router.delete("/:name", async (req, res) => {
   }
 });
 
-// Later - will add a route for updating composers.
 module.exports = router;

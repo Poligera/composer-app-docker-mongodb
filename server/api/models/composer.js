@@ -1,23 +1,26 @@
-// const { resolve } = require("path/posix");
-const db = require("../dbConfig");
+const { init } = require("../dbConfig");
+//Constructor function that creates unique identifiers for all the documents:
+const { ObjectId } = require("mongodb");
 
 class Composer {
   constructor(data) {
     this.id = data.id;
     this.name = data.name;
-    this.fullName = data.full_name;
+    this.fullName = data.fullName;
     this.country = data.country;
-    this.birthYear = data.birth_year;
-    this.deathYear = data.death_year;
+    this.birthYear = data.birthYear;
+    this.deathYear = data.deathYear;
   }
 
   static get all() {
     return new Promise(async (resolve, reject) => {
       try {
-        const composerData = await db.query(`SELECT * FROM composers;`);
-        const composers = composerData.rows.map((c) => new Composer(c));
+        const db = await init();
+        const composerData = await db.collection("composers").find().toArray();
+        const composers = composerData.map((c) => new Composer({ ...c }));
         resolve(composers);
       } catch (err) {
+        console.log(err);
         reject("Error retrieving composers");
       }
     });
@@ -26,11 +29,14 @@ class Composer {
   static findByName(name) {
     return new Promise(async (resolve, reject) => {
       try {
-        let composerData = await db.query(
-          `SELECT * FROM composers WHERE name = $1;`,
-          [name]
-        );
-        let composer = new Composer(composerData.rows[0]);
+        const db = await init();
+        let composerData = await db
+          .collection("composers")
+          .find({ name: name })
+          .toArray();
+        let composer = new Composer({
+          ...composerData[0],
+        });
         resolve(composer);
       } catch (err) {
         reject("Composer not found!");
@@ -41,11 +47,12 @@ class Composer {
   static findByCountry(country) {
     return new Promise(async (resolve, reject) => {
       try {
-        let composerData = await db.query(
-          `SELECT * FROM composers WHERE country = $1;`,
-          [country]
-        );
-        const composers = composerData.rows.map((c) => new Composer(c));
+        const db = await init();
+        let composerData = await db
+          .collection("composers")
+          .find({ country: country })
+          .toArray();
+        let composers = composerData.map((c) => new Composer({ ...c }));
         resolve(composers);
       } catch (err) {
         reject("Composers from this country not found!");
@@ -56,11 +63,11 @@ class Composer {
   static create(name, fullName, country, birthYear, deathYear) {
     return new Promise(async (resolve, reject) => {
       try {
-        let composerData = await db.query(
-          `INSERT INTO composers (name, full_name, country, birth_year, death_year) VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
-          [name, fullName, country, birthYear, deathYear]
-        );
-        let newComposer = new Composer(composerData.rows[0]);
+        let db = await init();
+        let composerData = await db
+          .collection("composers")
+          .insertOne({ name, fullName, country, birthYear, deathYear });
+        let newComposer = new Composer(composerData.ops[0]);
         resolve(newComposer);
       } catch (err) {
         reject("Error creating composer!");
@@ -68,14 +75,26 @@ class Composer {
     });
   }
 
-  update(fullName, country, birthYear, deathYear) {
+  update(name, fullName, country, birthYear, deathYear) {
     return new Promise(async (resolve, reject) => {
       try {
-        let updatedComposerData = await db.query(
-          `UPDATE composers SET full_name = $1, country = $2, birth_year = $3, death_year = $4 WHERE name = $5 RETURNING *;`,
-          [fullName, country, birthYear, deathYear, this.name]
-        );
-        resolve(updatedComposerData.rows[0]);
+        const db = await init();
+        let updatedComposerData = await db
+          .collection("composers")
+          .findOneAndUpdate(
+            { name: name },
+            {
+              $set: {
+                fullName: fullName,
+                country: country,
+                birthYear: birthYear,
+                deathYear: deathYear,
+              },
+            },
+            { returnOriginal: false }
+          );
+        let updatedComposer = new Composer(updatedComposerData.value);
+        resolve(updatedComposer);
       } catch (err) {
         reject("Error updating composer");
       }
@@ -85,7 +104,8 @@ class Composer {
   destroy() {
     return new Promise(async (resolve, reject) => {
       try {
-        await db.query(`DELETE FROM composers WHERE name = $1;`, [this.name]);
+        const db = await init();
+        await db.collection("composers").deleteOne({ name: this.name });
         resolve("Composer was deleted");
       } catch (err) {
         reject("Composer could not be deleted");

@@ -1,5 +1,13 @@
-const { Pool } = require("pg");
+const { MongoClient } = require("mongodb");
+// a Node.js library that handles connection and interaction with a MongoDB database
 
-const pool = new Pool();
+const connectionURL = process.env.DB_CONNECTION;
+const dbName = process.env.DB_NAME;
 
-module.exports = pool;
+const init = async () => {
+  let client = await MongoClient.connect(connectionURL);
+  console.log("Connected to database!", dbName);
+  return client.db(dbName);
+};
+
+module.exports = { init };
