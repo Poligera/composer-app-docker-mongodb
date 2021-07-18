@@ -37,9 +37,7 @@ function getAllComposers() {
   fetch("http://localhost:3000/all")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       data.composers.forEach((composer) => {
-        console.log(composer);
         const par = document.createElement("p");
         const btnDiv = document.createElement("div");
         const deleteBtn = document.createElement("button");
@@ -66,7 +64,8 @@ function getAllComposers() {
               birthYear: parseInt(e.target.birthYearUpdate.value),
               deathYear: parseInt(e.target.deathYearUpdate.value),
             };
-            updateComposer(updatedData, updateForm);
+            updateComposer(updatedData);
+            console.log(updatedData);
           });
         };
       });
@@ -75,7 +74,7 @@ function getAllComposers() {
 }
 
 // Update route:
-function updateComposer(data, el) {
+function updateComposer(data) {
   const options = {
     method: "PATCH",
     body: JSON.stringify(data),
@@ -84,8 +83,8 @@ function updateComposer(data, el) {
 
   fetch(`http://localhost:3000/${data.name}`, options)
     .then((r) => r.json())
-    .then((data) => {
-      const { composer } = data;
+    .then((response) => {
+      const { composer } = response;
       alert(`${composer.name} is updated!`);
       getAllComposers();
     })
@@ -111,11 +110,10 @@ function getComposerByName(e) {
 function getComposerByCountry(e) {
   e.preventDefault();
   const countryName = e.target.country.value;
-  console.log(countryName);
   fetch(`http://localhost:3000/country/${countryName}`)
     .then((res) => res.json())
     .then((data) => {
-      if (!(data.name === undefined)) {
+      if (data.composers.length !== 0) {
         countrySearchResults.textContent = "";
         data.composers.forEach((composer) => {
           const par = document.createElement("p");
@@ -123,8 +121,7 @@ function getComposerByCountry(e) {
           countrySearchResults.append(par);
         });
       } else {
-        alert("No results from this country!");
-        console.log(data.name);
+        alert(`No composers from ${countryName} found. Why not add a new one?`);
       }
     })
     .then(e.target.reset())
@@ -150,7 +147,10 @@ function addNewComposer(e) {
 
   fetch("http://localhost:3000/", options)
     .then((res) => res.json())
-    .then((data) => alert(`Composer added: ${data.fullName}`))
+    .then((data) => {
+      alert(`Composer added: ${data.fullName}`);
+      console.log(data);
+    })
     .then(getAllComposers())
     .catch(console.warn);
   e.target.reset();

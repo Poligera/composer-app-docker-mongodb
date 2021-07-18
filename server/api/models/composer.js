@@ -20,7 +20,6 @@ class Composer {
         const composers = composerData.map((c) => new Composer({ ...c }));
         resolve(composers);
       } catch (err) {
-        console.log(err);
         reject("Error retrieving composers");
       }
     });
@@ -63,7 +62,7 @@ class Composer {
   static create(name, fullName, country, birthYear, deathYear) {
     return new Promise(async (resolve, reject) => {
       try {
-        let db = await init();
+        const db = await init();
         let composerData = await db
           .collection("composers")
           .insertOne({ name, fullName, country, birthYear, deathYear });
@@ -75,26 +74,27 @@ class Composer {
     });
   }
 
-  update(name, fullName, country, birthYear, deathYear) {
+  update(fullName, country, birthYear, deathYear) {
     return new Promise(async (resolve, reject) => {
       try {
         const db = await init();
         let updatedComposerData = await db
           .collection("composers")
           .findOneAndUpdate(
-            { name: name },
+            { name: this.name },
             {
               $set: {
+                // _id: ObjectId(this.id),
                 fullName: fullName,
                 country: country,
                 birthYear: birthYear,
                 deathYear: deathYear,
               },
             },
-            { returnOriginal: false }
+            { returnNewDocument: true }
           );
-        let updatedComposer = new Composer(updatedComposerData.value);
-        resolve(updatedComposer);
+        // let updatedComposer = new Composer(updatedComposerData.value)
+        resolve(updatedComposerData.value);
       } catch (err) {
         reject("Error updating composer");
       }
