@@ -64,11 +64,11 @@ class Composer {
       try {
         const db = await init();
         let composerData = await db.collection("composers").insertOne({
-          name: name,
-          fullName: fullName,
-          country: country,
-          birthYear: birthYear,
-          deathYear: deathYear,
+          name,
+          fullName,
+          country,
+          birthYear,
+          deathYear,
         });
         let newComposer = new Composer(composerData.ops[0]);
         resolve(newComposer);

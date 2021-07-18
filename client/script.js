@@ -85,7 +85,6 @@ function updateComposer(data) {
     .then((response) => {
       const { composer } = response;
       alert(`${composer.name} is updated!`);
-      console.log(response);
       getAllComposers();
     })
     .catch(console.warn);
